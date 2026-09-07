@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Earnings surprise 2-day returns</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="sheet">
+      <header class="masthead">
+        <p class="kicker">Market note · Yahoo Finance · yfinance</p>
+        <div class="title-row">
+          <h1>Two-day returns after positive earnings surprises</h1>
+          <form id="ticker-form" class="ticker-form">
+            <label for="ticker">Ticker</label>
+            <input id="ticker" name="ticker" value="AMZN" maxlength="12" autocomplete="off" />
+            <button type="submit">Load</button>
+            <button type="button" id="refresh" class="ghost">Refresh</button>
+          </form>
+        </div>
+        <p class="lede" id="lede">
+          Loading Amazon earnings dates and the full daily price history…
+        </p>
+      </header>
+
+      <p id="status" class="status" hidden></p>
+
+      <section class="windows" aria-label="Lookback window">
+        <button class="chip" data-window="3y">3 years</button>
+        <button class="chip is-active" data-window="5y">5 years</button>
+        <button class="chip" data-window="10y">10 years</button>
+        <button class="chip" data-window="all">All history</button>
+      </section>
+
+      <section class="hero" id="hero">
+        <article class="metric metric-primary">
+          <p class="metric-label">Median 2-day return</p>
+          <p class="metric-value" id="median">—</p>
+          <p class="metric-note" id="median-note">Close three sessions later vs. close the session before the print.</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Pearson correlation</p>
+          <p class="metric-value" id="pearson">—</p>
+          <p class="metric-note">2-day return vs. surprise magnitude (%)</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Positive surprises</p>
+          <p class="metric-value" id="count">—</p>
+          <p class="metric-note" id="count-note">Reported prints with Surprise(%) &gt; 0</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Share of up moves</p>
+          <p class="metric-value" id="up-share">—</p>
+          <p class="metric-note">Positive-surprise days with a positive 2-day return</p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <h2>Return vs. surprise</h2>
+          <p class="panel-copy" id="scatter-copy">
+            Each point is one positive earnings surprise. Horizontal axis is Yahoo’s surprise percentage;
+            vertical axis is the 2-day close-to-close return.
+          </p>
+          <div class="chart-wrap">
+            <canvas id="scatter" aria-label="Scatter plot of surprise versus 2-day return"></canvas>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>How this is measured</h2>
+          <ol class="method">
+            <li>Load earnings dates with <code>Ticker.get_earnings_dates()</code>.</li>
+            <li>Download the complete daily close history with <code>Ticker.history(period="max")</code>.</li>
+            <li>
+              For every three consecutive sessions (Day 1, Day 2, Day 3), compute
+              <code>Close<sub>Day3</sub> / Close<sub>Day1</sub> − 1</code>, indexed on Day 2.
+            </li>
+            <li>
+              Keep prints with a reported EPS and <code>Surprise(%) &gt; 0</code>, take the median 2-day
+              return, then correlate that return with surprise magnitude.
+            </li>
+          </ol>
+          <dl class="meta" id="meta"></dl>
+        </article>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="table-head">
+          <h2 id="table-title">Positive surprise prints</h2>
+          <p id="table-note"></p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Earnings date</th>
+                <th>EPS est.</th>
+                <th>Reported</th>
+                <th>Surprise</th>
+                <th>2-day return</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="5">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Prices are split-adjusted Yahoo closes. Amazon typically reports after the close, so Day 2 is the
+          announcement calendar session and Day 3 is the first full session after the print. Extreme surprise
+          percentages can appear when the consensus estimate is near zero; they still enter the correlation.
+        </p>
+      </footer>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
