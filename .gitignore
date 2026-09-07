@@ -13,3 +13,4 @@ build/
 .DS_Store
 data/cache/
 .env
+agent-tools/
