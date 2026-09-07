@@ -1,6 +1,9 @@
 # Earnings surprise 2-day returns
 
-Compute the **median 2-day percentage change** in a stock after **positive earnings surprises**, plus the **correlation** between that 2-day return and the surprise magnitude.
+Compute the **2-day percentage change** in a stock around earnings, then ask two questions:
+
+1. Does **surprise magnitude** line up with the stock’s 2-day reaction?
+2. Does that reaction differ in **S&P 500 bull vs bear markets**?
 
 The default ticker is **AMZN**. The dashboard can load any Yahoo Finance symbol.
 
@@ -12,9 +15,9 @@ For every three consecutive trading days (Day 1, Day 2, Day 3):
 2-day return = Close_Day3 / Close_Day1 - 1
 ```
 
-Day 2 is treated as the earnings announcement session. A print is a positive surprise when Yahoo’s `Surprise(%)` is greater than zero and a reported EPS is present.
+Day 2 is the earnings announcement session. Correlation uses **every reported print** (beats and misses). `Surprise(%)` comes from Yahoo Finance.
 
-The headline window is the last **five years** of reported prints. The app also shows 3-year, 10-year, and full-history cuts.
+Bull and bear markets are dated on **SPY** with a 20% peak-to-trough reversal: a bear runs from the peak before a 20% drop to the trough before a 20% rally. A second cut flags prints while SPY is below its 200-day moving average.
 
 ## Run locally
 
@@ -42,6 +45,6 @@ python3 -m pytest -q
 ## Data
 
 - Earnings: `yfinance.Ticker.get_earnings_dates()`
-- Prices: `yfinance.Ticker.history(period="max", auto_adjust=True)`
+- Stock and SPY prices: `yfinance.Ticker.history(period="max", auto_adjust=True)`
 
 Requires network access to Yahoo Finance. If a request is rate-limited, wait and use **Refresh**.

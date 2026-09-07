@@ -6,6 +6,7 @@ import pandas as pd
 import yfinance as yf
 
 DEFAULT_TICKER = "AMZN"
+MARKET_INDEX = "SPY"
 EARNINGS_LIMIT = 100
 
 
@@ -23,3 +24,8 @@ def load_prices(ticker: str = DEFAULT_TICKER) -> pd.DataFrame:
     if history is None:
         return pd.DataFrame()
     return history
+
+
+def load_index(ticker: str = MARKET_INDEX) -> pd.DataFrame:
+    """Download the market index used to date bull and bear regimes."""
+    return load_prices(ticker)

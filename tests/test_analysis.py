@@ -8,9 +8,13 @@ import pytest
 from earnings_reaction.analysis import (
     align_earnings_to_returns,
     filter_lookback,
+    market_regimes,
     pearson_corr,
     prepare_earnings,
     summarize_positive_surprises,
+    summarize_reactions,
+    summarize_regime_split,
+    surprise_terciles,
     two_day_returns,
 )
 
@@ -103,3 +107,47 @@ def test_pearson_undefined_when_constant():
     x = pd.Series([1.0, 1.0, 1.0])
     y = pd.Series([0.1, 0.2, 0.3])
     assert pearson_corr(x, y) is None
+
+
+def test_market_regimes_dates_bear_from_peak_until_trough_reversal():
+    index = pd.bdate_range("2020-01-01", periods=12)
+    # Peak at 150, then a 26% drop to 110, then a 20% bounce from 100 to 120.
+    close = pd.Series(
+        [100, 120, 140, 150, 148, 130, 110, 100, 102, 108, 120, 125],
+        index=index,
+    )
+    regimes = market_regimes(close, threshold=0.20)
+    assert list(regimes.iloc[:3]) == ["bull", "bull", "bull"]
+    assert regimes.loc[index[3]] == "bear"  # peak that preceded the 20% drop
+    assert regimes.loc[index[6]] == "bear"
+    assert regimes.loc[index[-1]] == "bull"
+
+
+def test_surprise_terciles_are_monotonic_for_aligned_sample():
+    events = pd.DataFrame(
+        {
+            "Surprise(%)": [1, 2, 3, 10, 11, 12, 30, 31, 32],
+            "two_day_return": [-0.03, -0.02, -0.04, 0.00, 0.01, -0.01, 0.05, 0.06, 0.07],
+        }
+    )
+    rows = surprise_terciles(events)
+    assert len(rows) == 3
+    assert rows[0]["median_2day_return"] < rows[2]["median_2day_return"]
+
+
+def test_regime_split_separates_bull_and_bear_medians():
+    events = pd.DataFrame(
+        {
+            "Surprise(%)": [10.0, 12.0, -8.0, 15.0],
+            "two_day_return": [0.01, 0.02, -0.04, 0.08],
+            "regime": ["bull", "bull", "bull", "bear"],
+            "below_200dma": [False, False, False, True],
+        }
+    )
+    split = summarize_regime_split(events)
+    assert split["bull"]["event_count"] == 3
+    assert split["bear"]["event_count"] == 1
+    assert split["bear"]["median_2day_return"] == pytest.approx(0.08)
+    all_s = summarize_reactions(events)
+    assert all_s["beats"]["event_count"] == 3
+    assert all_s["misses"]["event_count"] == 1
