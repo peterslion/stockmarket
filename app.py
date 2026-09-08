@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from earnings_reaction.additions import run_sp500_additions
 from earnings_reaction.corrections import run_corrections
 from earnings_reaction.fetch import DEFAULT_TICKER
 from earnings_reaction.indexes_ytd import run_index_ytd
@@ -23,6 +24,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 _cache: dict[str, dict] = {}
 _corrections_cache: dict | None = None
 _ytd_cache: dict | None = None
+_additions_cache: dict | None = None
 _lock = threading.Lock()
 
 
@@ -53,6 +55,11 @@ def corrections_page() -> FileResponse:
 @app.get("/indexes-ytd")
 def indexes_ytd_page() -> FileResponse:
     return FileResponse(STATIC_DIR / "indexes.html")
+
+
+@app.get("/additions")
+def additions_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "additions.html")
 
 
 @app.get("/api/health")
@@ -87,6 +94,21 @@ def indexes_ytd(refresh: bool = Query(default=False)) -> dict:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     with _lock:
         _ytd_cache = payload
+    return payload
+
+
+@app.get("/api/additions")
+def additions(refresh: bool = Query(default=False)) -> dict:
+    global _additions_cache
+    with _lock:
+        if not refresh and _additions_cache is not None:
+            return _additions_cache
+    try:
+        payload = run_sp500_additions()
+    except Exception as exc:  # noqa: BLE001 — surface Wikipedia/network failures to the UI
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    with _lock:
+        _additions_cache = payload
     return payload
 
 

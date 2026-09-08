@@ -50,6 +50,14 @@ python3 question2_indexes_ytd.py
 
 Open [http://127.0.0.1:43147/indexes-ytd](http://127.0.0.1:43147/indexes-ytd) for the ranking table.
 
+S&P 500 constituents added since 2020 (Question 1):
+
+```bash
+python3 question1_sp500_additions.py
+```
+
+Open [http://127.0.0.1:43147/additions](http://127.0.0.1:43147/additions) for the yearly counts.
+
 Open [http://127.0.0.1:43147/corrections](http://127.0.0.1:43147/corrections) for the same table in the browser.
 
 ## Tests

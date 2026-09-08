@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>S&amp;P 500 stocks added since 2020</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="sheet">
+      <nav class="site-nav">
+        <a href="/">Earnings surprises</a>
+        <a href="/indexes-ytd">Indexes YTD</a>
+        <a href="/corrections">S&amp;P 500 corrections</a>
+        <a href="/additions" class="is-active">S&amp;P 500 additions</a>
+      </nav>
+      <header class="masthead">
+        <p class="kicker">Question 1 · Index · Wikipedia</p>
+        <div class="title-row">
+          <h1>S&amp;P 500 stocks added since 2020</h1>
+          <button type="button" id="refresh" class="ghost">Refresh</button>
+        </div>
+        <p class="lede" id="lede">Loading the current S&amp;P 500 constituents table from Wikipedia…</p>
+      </header>
+      <p id="status" class="status" hidden></p>
+
+      <section class="hero hero-three">
+        <article class="metric metric-primary">
+          <p class="metric-label">Peak addition year</p>
+          <p class="metric-value" id="peak-year">—</p>
+          <p class="metric-note" id="peak-note">Year with the most current members dated 2020 or later.</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Stocks added that year</p>
+          <p class="metric-value" id="peak-count">—</p>
+          <p class="metric-note">Count of current constituents with that add year.</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Additions since 2020</p>
+          <p class="metric-value" id="total">—</p>
+          <p class="metric-note">Still in the index, with a Wikipedia add date of 2020+.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Additions by year</h2>
+        <p class="panel-copy">
+          This is the current membership list, not a full historical additions calendar. A stock added then later
+          removed will not appear.
+        </p>
+        <div class="chart-wrap">
+          <canvas id="bars" aria-label="Bar chart of S&amp;P 500 additions by year"></canvas>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="table-head">
+          <h2>Current constituents added in 2020 or later</h2>
+          <p id="table-note"></p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Name</th>
+                <th>Year added</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="3">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Source: Wikipedia List of S&amp;P 500 companies, first table. Date added is parsed and filtered to year ≥
+          2020.
+        </p>
+      </footer>
+    </div>
+    <script src="/static/additions.js"></script>
+  </body>
+</html>
