@@ -169,6 +169,10 @@ button.ghost,
   border: 1px solid var(--rule);
 }
 
+.hero-three {
+  grid-template-columns: 1.4fr 1.4fr 1fr;
+}
+
 .metric {
   background: #f8f1e3;
   padding: 16px 16px 14px;
@@ -264,6 +268,10 @@ code {
 
 .chart-wrap {
   height: 280px;
+}
+
+.chart-wrap-tall {
+  height: 360px;
 }
 
 .chart-wrap-short {

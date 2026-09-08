@@ -42,6 +42,14 @@ S&P 500 5%+ corrections between all-time highs (Question 3):
 python3 question3_sp500_corrections.py
 ```
 
+Index year-to-date returns as of 21 August 2026 (Question 2):
+
+```bash
+python3 question2_indexes_ytd.py
+```
+
+Open [http://127.0.0.1:43147/indexes-ytd](http://127.0.0.1:43147/indexes-ytd) for the ranking table.
+
 Open [http://127.0.0.1:43147/corrections](http://127.0.0.1:43147/corrections) for the same table in the browser.
 
 ## Tests

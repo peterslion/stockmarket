@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from earnings_reaction.corrections import run_corrections
 from earnings_reaction.fetch import DEFAULT_TICKER
+from earnings_reaction.indexes_ytd import run_index_ytd
 from earnings_reaction.pipeline import run_analysis
 
 ROOT = Path(__file__).resolve().parent
@@ -21,6 +22,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 _cache: dict[str, dict] = {}
 _corrections_cache: dict | None = None
+_ytd_cache: dict | None = None
 _lock = threading.Lock()
 
 
@@ -48,6 +50,11 @@ def corrections_page() -> FileResponse:
     return FileResponse(STATIC_DIR / "corrections.html")
 
 
+@app.get("/indexes-ytd")
+def indexes_ytd_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "indexes.html")
+
+
 @app.get("/api/health")
 def health() -> dict:
     return {"ok": True}
@@ -65,6 +72,21 @@ def corrections(refresh: bool = Query(default=False)) -> dict:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     with _lock:
         _corrections_cache = payload
+    return payload
+
+
+@app.get("/api/indexes-ytd")
+def indexes_ytd(refresh: bool = Query(default=False)) -> dict:
+    global _ytd_cache
+    with _lock:
+        if not refresh and _ytd_cache is not None:
+            return _ytd_cache
+    try:
+        payload = run_index_ytd()
+    except Exception as exc:  # noqa: BLE001 — surface Yahoo/network failures to the UI
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    with _lock:
+        _ytd_cache = payload
     return payload
 
 

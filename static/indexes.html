@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Indexes YTD as of 21 August 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="sheet">
+      <nav class="site-nav">
+        <a href="/">Earnings surprises</a>
+        <a href="/indexes-ytd" class="is-active">Indexes YTD</a>
+        <a href="/corrections">S&amp;P 500 corrections</a>
+      </nav>
+      <header class="masthead">
+        <p class="kicker">Question 2 · Macro · Yahoo Finance</p>
+        <div class="title-row">
+          <h1>Index year-to-date returns as of 21 August 2026</h1>
+          <button type="button" id="refresh" class="ghost">Refresh</button>
+        </div>
+        <p class="lede" id="lede">Loading major equity indexes from 1 January through 21 August 2026…</p>
+      </header>
+      <p id="status" class="status" hidden></p>
+
+      <section class="hero hero-three">
+        <article class="metric metric-primary">
+          <p class="metric-label">Leader</p>
+          <p class="metric-value" id="leader">—</p>
+          <p class="metric-note" id="leader-note">Best YTD close-to-close return.</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Laggard</p>
+          <p class="metric-value" id="laggard">—</p>
+          <p class="metric-note" id="laggard-note">Weakest YTD close-to-close return.</p>
+        </article>
+        <article class="metric">
+          <p class="metric-label">Indexes</p>
+          <p class="metric-value" id="count">—</p>
+          <p class="metric-note" id="count-note">First close on or after 1 Jan vs last close on or before 21 Aug.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>YTD return by index</h2>
+        <p class="panel-copy">Return is last close / first close − 1, using the available sessions in the window.</p>
+        <div class="chart-wrap chart-wrap-tall">
+          <canvas id="bars" aria-label="Bar chart of year-to-date index returns"></canvas>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="table-head">
+          <h2>Country indexes</h2>
+          <p>As of 21 August 2026.</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Index</th>
+                <th>Ticker</th>
+                <th>Start</th>
+                <th>Start close</th>
+                <th>End</th>
+                <th>End close</th>
+                <th>YTD</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="8">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Window is 2026-01-01 through 2026-08-21. Yahoo’s download end date is 2026-08-22 so the 21 August close is
+          included. Missing series stay in the table as blank rows.
+        </p>
+      </footer>
+    </div>
+    <script src="/static/indexes.js"></script>
+  </body>
+</html>
