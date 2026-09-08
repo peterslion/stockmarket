@@ -36,6 +36,14 @@ Print the same numbers in the terminal:
 python3 -m earnings_reaction.cli --ticker AMZN
 ```
 
+S&P 500 5%+ corrections between all-time highs (Question 3):
+
+```bash
+python3 question3_sp500_corrections.py
+```
+
+Open [http://127.0.0.1:43147/corrections](http://127.0.0.1:43147/corrections) for the same table in the browser.
+
 ## Tests
 
 ```bash

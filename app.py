@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from earnings_reaction.corrections import run_corrections
 from earnings_reaction.fetch import DEFAULT_TICKER
 from earnings_reaction.pipeline import run_analysis
 
@@ -19,6 +20,7 @@ app = FastAPI(title="Earnings surprise 2-day returns")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 _cache: dict[str, dict] = {}
+_corrections_cache: dict | None = None
 _lock = threading.Lock()
 
 
@@ -41,9 +43,29 @@ def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
+@app.get("/corrections")
+def corrections_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "corrections.html")
+
+
 @app.get("/api/health")
 def health() -> dict:
     return {"ok": True}
+
+
+@app.get("/api/corrections")
+def corrections(refresh: bool = Query(default=False)) -> dict:
+    global _corrections_cache
+    with _lock:
+        if not refresh and _corrections_cache is not None:
+            return _corrections_cache
+    try:
+        payload = run_corrections()
+    except Exception as exc:  # noqa: BLE001 — surface Yahoo/network failures to the UI
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    with _lock:
+        _corrections_cache = payload
+    return payload
 
 
 @app.get("/api/analysis")

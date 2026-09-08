@@ -49,6 +49,26 @@ body {
   color: var(--muted);
 }
 
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 0 18px;
+  font-size: 14px;
+}
+
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.site-nav a.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
 .title-row {
   display: flex;
   justify-content: space-between;
