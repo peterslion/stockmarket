@@ -1,13 +1,38 @@
-# Earnings surprise 2-day returns
+# Market questions
 
-Compute the **2-day percentage change** in a stock around earnings, then ask two questions:
+Runnable scripts and a small dashboard for four questions.
 
-1. Does **surprise magnitude** line up with the stock’s 2-day reaction?
-2. Does that reaction differ in **S&P 500 bull vs bear markets**?
+## Question 1. [Index] S&P 500 stocks added since 2020
 
-The default ticker is **AMZN**. The dashboard can load any Yahoo Finance symbol.
+```bash
+python3 question1_sp500_additions.py
+```
 
-## What it measures
+Open [http://127.0.0.1:43147/additions](http://127.0.0.1:43147/additions).
+
+## Question 2. [Macro] Indexes YTD as of 21 August 2026
+
+```bash
+python3 question2_indexes_ytd.py
+```
+
+Open [http://127.0.0.1:43147/indexes-ytd](http://127.0.0.1:43147/indexes-ytd).
+
+## Question 3. [Index] S&P 500 market corrections
+
+```bash
+python3 question3_sp500_corrections.py
+```
+
+Open [http://127.0.0.1:43147/corrections](http://127.0.0.1:43147/corrections).
+
+## Question 4. [Stock] AMZN 2-day returns around earnings surprises, including S&P 500 bull/bear splits
+
+```bash
+python3 question4_amzn_earnings.py
+```
+
+Open [http://127.0.0.1:43147](http://127.0.0.1:43147).
 
 For every three consecutive trading days (Day 1, Day 2, Day 3):
 
@@ -15,11 +40,9 @@ For every three consecutive trading days (Day 1, Day 2, Day 3):
 2-day return = Close_Day3 / Close_Day1 - 1
 ```
 
-Day 2 is the earnings announcement session. Correlation uses **every reported print** (beats and misses). `Surprise(%)` comes from Yahoo Finance.
+Day 2 is the earnings session. Correlation uses every reported print (beats and misses). Bull and bear markets are dated on SPY with a 20% peak-to-trough reversal.
 
-Bull and bear markets are dated on **SPY** with a 20% peak-to-trough reversal: a bear runs from the peak before a 20% drop to the trough before a 20% rally. A second cut flags prints while SPY is below its 200-day moving average.
-
-## Run locally
+## Run the dashboard
 
 ```bash
 python3 -m venv .venv
@@ -28,47 +51,8 @@ pip install -r requirements.txt
 uvicorn app:app --host 127.0.0.1 --port 43147
 ```
 
-Open [http://127.0.0.1:43147](http://127.0.0.1:43147).
-
-Print the same numbers in the terminal:
-
-```bash
-python3 -m earnings_reaction.cli --ticker AMZN
-```
-
-S&P 500 5%+ corrections between all-time highs (Question 3):
-
-```bash
-python3 question3_sp500_corrections.py
-```
-
-Index year-to-date returns as of 21 August 2026 (Question 2):
-
-```bash
-python3 question2_indexes_ytd.py
-```
-
-Open [http://127.0.0.1:43147/indexes-ytd](http://127.0.0.1:43147/indexes-ytd) for the ranking table.
-
-S&P 500 constituents added since 2020 (Question 1):
-
-```bash
-python3 question1_sp500_additions.py
-```
-
-Open [http://127.0.0.1:43147/additions](http://127.0.0.1:43147/additions) for the yearly counts.
-
-Open [http://127.0.0.1:43147/corrections](http://127.0.0.1:43147/corrections) for the same table in the browser.
-
-## Tests
-
 ```bash
 python3 -m pytest -q
 ```
 
-## Data
-
-- Earnings: `yfinance.Ticker.get_earnings_dates()`
-- Stock and SPY prices: `yfinance.Ticker.history(period="max", auto_adjust=True)`
-
-Requires network access to Yahoo Finance. If a request is rate-limited, wait and use **Refresh**.
+Requires network access to Yahoo Finance and Wikipedia.

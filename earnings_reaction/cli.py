@@ -34,7 +34,10 @@ def _dump_reaction(title: str, block: dict, indent: str = "  ") -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Median 2-day return after earnings surprises, including bull/bear splits."
+        description=(
+            "Question 4. [Stock] AMZN 2-day returns around earnings surprises, "
+            "including S&P 500 bull/bear splits."
+        )
     )
     parser.add_argument("--ticker", default=DEFAULT_TICKER, help="Yahoo Finance ticker (default: AMZN)")
     parser.add_argument("--json", action="store_true", help="Print the full JSON payload")
@@ -46,7 +49,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write("\n")
         return 0
 
-    print(f"{result['ticker']} earnings-surprise 2-day reaction")
+    print(f"Question 4. [Stock] {result['ticker']} 2-day returns around earnings surprises")
     print(f"Prices {result['price_start']} → {result['price_end']} ({result['price_sessions']} sessions)")
     print(f"Reported earnings rows: {result['reported_earnings']}")
     print(f"Market regime index: {result['market_index']}")

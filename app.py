@@ -18,7 +18,7 @@ from earnings_reaction.pipeline import run_analysis
 ROOT = Path(__file__).resolve().parent
 STATIC_DIR = ROOT / "static"
 
-app = FastAPI(title="Earnings surprise 2-day returns")
+app = FastAPI(title="Question 4. AMZN 2-day earnings surprises")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 _cache: dict[str, dict] = {}
@@ -44,6 +44,11 @@ def _get_analysis(ticker: str, refresh: bool = False) -> dict:
 
 @app.get("/")
 def index() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/question4")
+def question4_page() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 

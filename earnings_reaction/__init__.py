@@ -1,4 +1,4 @@
-"""AMZN (or any ticker) 2-day returns around positive earnings surprises."""
+"""Question 4. AMZN 2-day returns around earnings surprises."""
 
 from earnings_reaction.analysis import (
     align_earnings_to_returns,
